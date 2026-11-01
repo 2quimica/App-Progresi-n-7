@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Progresión 7: Gravitación Universal y Ley de Coulomb</title>
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: #131b2e;
+      --bg-card-hover: #1c2742;
+      --border-color: #263554;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-cyan: #06b6d4;
+      --accent-cyan-glow: rgba(6, 182, 212, 0.25);
+      --accent-purple: #8b5cf6;
+      --accent-purple-glow: rgba(139, 92, 246, 0.25);
+      --accent-amber: #f59e0b;
+      --accent-amber-glow: rgba(245, 158, 11, 0.2);
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.15);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.15);
+      --font-stack: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-stack);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+      overflow-x: hidden;
+    }
+
+    #app-container {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Fixed top navigation bar */
+    .top-bar {
+      position: sticky;
+      top: 8px;
+      z-index: 100;
+      background: rgba(19, 27, 46, 0.94);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .top-bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-tag {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
+
+    .phase-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .progress-bar-track {
+      width: 100%;
+      height: 8px;
+      background-color: #0b111e;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+      transition: width 0.4s ease;
+    }
+
+    /* Standard Cards */
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-header-badge {
+      align-self: flex-start;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan-glow);
+    }
+
+    h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      line-height: 1.25;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    strong {
+      color: var(--text-main);
+    }
+
+    /* Teacher Pause Box */
+    .teacher-pause-card {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(139, 92, 246, 0.12));
+      border: 2px dashed var(--accent-amber);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .teacher-pause-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--accent-amber);
+    }
+
+    /* Form Inputs & Buttons */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .input-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .input-control {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border-color);
+      background-color: #0b101d;
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-control:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px var(--accent-cyan-glow);
+    }
+
+    .btn {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      user-select: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), #0284c7);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-cyan-glow);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background-color: #18233c;
+      color: var(--text-main);
+      border: 1.5px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-card-hover);
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-amber {
+      background: linear-gradient(135deg, var(--accent-amber), #d97706);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-amber-glow);
+    }
+
+    .btn-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Interactive Simulations Layout */
+    .sim-container {
+      background-color: #0b101d;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sim-canvas-box {
+      width: 100%;
+      min-height: 180px;
+      background-color: #060911;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 480px) {
+      .controls-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .slider-control {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: #131a2a;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .slider-control label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      color: var(--accent-cyan);
+    }
+
+    .slider-control input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+    }
+
+    .value-display {
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .formula-banner {
+      background-color: #172238;
+      border-left: 4px solid var(--accent-cyan);
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.95rem;
+      color: #38bdf8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Option & Answer Cards */
+    .options-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-btn {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border-color);
+      background-color: #0b101d;
+      color: var(--text-main);
+      font-size: 0.92rem;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.15s ease;
+    }
+
+    .option-btn:hover:not(.btn-disabled) {
+      border-color: var(--accent-cyan);
+      background-color: var(--bg-card-hover);
+    }
+
+    .option-btn.selected {
+      border-color: var(--accent-cyan);
+      background-color: rgba(6, 182, 212, 0.12);
+    }
+
+    .option-letter {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background-color: var(--border-color);
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feedback-box {
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .feedback-correct {
+      background-color: var(--success-bg);
+      border: 1.5px solid var(--success);
+      color: #6ee7b7;
+    }
+
+    .feedback-incorrect {
+      background-color: var(--danger-bg);
+      border: 1.5px solid var(--danger);
+      color: #fca5a5;
+    }
+
+    /* Touch Categorizer (Elaborate) */
+    .categorizer-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .category-columns {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 520px) {
+      .category-columns {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .category-box {
+      background-color: #0b101d;
+      border: 1.5px dashed var(--border-color);
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .category-box.active-target {
+      border-color: var(--accent-cyan);
+      background-color: rgba(6, 182, 212, 0.05);
+    }
+
+    .category-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      text-align: center;
+      color: var(--accent-cyan);
+    }
+
+    .items-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      background-color: #0b101d;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .chip-item {
+      padding: 8px 12px;
+      border-radius: 20px;
+      background-color: #1a253e;
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+
+    .chip-item.selected-chip {
+      border-color: var(--accent-cyan);
+      background-color: var(--accent-cyan);
+      color: #000;
+      font-weight: 800;
+    }
+
+    /* Concept Map */
+    .concept-map-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .map-nodes-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 480px) {
+      .map-nodes-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .map-node {
+      background-color: #0b101d;
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .map-node-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .map-slot {
+      min-height: 40px;
+      border: 1.5px dashed var(--accent-cyan);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--accent-cyan);
+      cursor: pointer;
+      background-color: rgba(6, 182, 212, 0.04);
+    }
+
+    .map-slot.filled {
+      border-style: solid;
+      background-color: #1e2c4a;
+      color: #fff;
+    }
+
+    /* Quiz Grid Indicator */
+    .quiz-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      margin: 8px 0;
+    }
+
+    .quiz-nav-btn {
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background-color: #0b101d;
+      color: var(--text-muted);
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quiz-nav-btn.active {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 0 2px var(--accent-cyan-glow);
+    }
+
+    .quiz-nav-btn.answered {
+      background-color: #1e2c4a;
+      color: #fff;
+      border-color: var(--accent-purple);
+    }
+
+    /* Evidence Screenshot Card */
+    .evidence-card {
+      background: linear-gradient(180deg, #131b2e 0%, #080d1a 100%);
+      border: 2px solid var(--accent-cyan);
+      border-radius: 20px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .score-large {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge-perf {
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      align-self: center;
+    }
+
+    .badge-exc { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+    .badge-good { background: rgba(6, 182, 212, 0.2); color: #38bdf8; border: 1px solid #06b6d4; }
+    .badge-proc { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+    .badge-reinf { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    .summary-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .summary-table td:nth-child(2) {
+      text-align: right;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .camera-notice {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.2));
+      border: 1.5px dashed var(--accent-amber);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #fef08a;
+    }
+
+    /* Custom SVG Orbit / Diagram styling */
+    svg text {
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- Top Progress Bar (Visible after Start) -->
+    <div id="top-bar" class="top-bar" style="display: none;">
+      <div class="top-bar-header">
+        <span id="user-display-tag" class="user-tag">Estudiante</span>
+        <span id="phase-display-badge" class="phase-badge">FASE 1 DE 5</span>
+      </div>
+      <div class="progress-bar-track">
+        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- Main Dynamic Content Container -->
+    <main id="app-content"></main>
+  </div>
+
+  <script>
+    // --- GLOBAL CONSTANTS & BANK DATA ---
+
+    // Quiz Questions Bank (10 Questions mapped exactly to requirements)
+    const QUIZ_BANK = [
+      {
+        id: 1,
+        topic: "gravitacion",
+        question: "¿Qué establece formalmente la Ley de Gravitación Universal enunciada por Isaac Newton?",
+        options: [
+          "Que dos masas se repelen proporcionalmente al cuadrado de la distancia que las separa.",
+          "Que la fuerza gravitatoria entre dos masas es directamente proporcional al producto de sus masas e inversamente proporcional al cuadrado de la distancia entre ellas.",
+          "Que la fuerza gravitatoria actúa únicamente en presencia de una atmósfera densa.",
+          "Que la fuerza entre objetos distantes depende exclusivamente de la constante de Coulomb k."
+        ],
+        correct: 1,
+        explanation: "Newton demostró que toda masa atrae a otra masa con una fuerza proporcional al producto de ambas ($m_1 \\cdot m_2$) y que disminuye rápidamente con el cuadrado de la distancia ($1/r^2$)."
+      },
+      {
+        id: 2,
+        topic: "gravitacion",
+        question: "Si la distancia entre dos cuerpos celestes se reduce a la mitad (r / 2), ¿qué ocurre con la magnitud de la fuerza gravitatoria entre ellos?",
+        options: [
+          "Se reduce a la mitad (F / 2).",
+          "Permanece exactamente constante.",
+          "Aumenta al cuádruple (4F).",
+          "Se duplica únicamente (2F)."
+        ],
+        correct: 2,
+        explanation: "Debido a la relación inversamente proporcional al cuadrado ($1/r^2$), si r se reduce a la mitad, $(1/2)^2 = 1/4$ en el denominador, lo que quintuplica o multiplica por 4 la fuerza ($4F$)."
+      },
+      {
+        id: 3,
+        topic: "masa_peso",
+        question: "¿Cuál de las siguientes afirmaciones sobre la MASA y el PESO es científicamente CORRECTA?",
+        options: [
+          "La masa cambia según el planeta, mientras que el peso permanece idéntico en todo el universo.",
+          "La masa es la cantidad de materia (en kg) y es invariable; el peso es la fuerza gravitatoria (en N) y depende del valor local de g.",
+          "Masa y peso son sinónimos idénticos y ambos se miden siempre en kilogramos en el Sistema Internacional.",
+          "El peso de una persona en la Luna es mayor que en la Tierra porque la aceleración de la gravedad es mayor allá."
+        ],
+        correct: 1,
+        explanation: "La masa ($m$) es una propiedad intrínseca de la materia. El peso ($P=m \\cdot g$) es la fuerza gravitatoria con la que el astro jala esa masa, por lo que varía si cambia $g$."
+      },
+      {
+        id: 4,
+        topic: "distancia_cuadrado",
+        question: "Si duplicamos la distancia entre dos objetos cargados eléctricamente, ¿cómo se modifica la fuerza de Coulomb entre ellos?",
+        options: [
+          "Disminuye a la cuarta parte (F / 4).",
+          "Disminuye exactamente a la mitad (F / 2).",
+          "Se duplica (2F).",
+          "Aumenta al cuádruple (4F)."
+        ],
+        correct: 0,
+        explanation: "Tanto la ley de gravitación como la ley de Coulomb obedecen la ley del inverso del cuadrado. Si la distancia se duplica ($2r$), la fuerza resulta dividida entre $2^2 = 4$."
+      },
+      {
+        id: 5,
+        topic: "coulomb",
+        question: "¿Qué expresa la Ley de Coulomb para la fuerza electrostática entre dos cargas puntuales?",
+        options: [
+          "La fuerza eléctrica es inversamente proporcional al producto de las cargas y directa a la distancia.",
+          "La fuerza es proporcional al producto de las magnitudes de las cargas e inversamente proporcional al cuadrado de la distancia entre ellas.",
+          "Las cargas del mismo signo siempre se atraen con una constante $G$.",
+          "La fuerza es nula si los cuerpos están separados por el vacío."
+        ],
+        correct: 1,
+        explanation: "La Ley de Coulomb es $F_e = k \\frac{|q_1 q_2|}{r^2}$. La magnitud depende directamente del producto de las cargas y del inverso del cuadrado de la distancia."
+      },
+      {
+        id: 6,
+        topic: "coulomb",
+        question: "Al comparar dos cargas eléctricas del mismo signo (- y -), ¿cuál es el comportamiento de la fuerza eléctrica entre ellas?",
+        options: [
+          "Se atraen mutuamente.",
+          "Se repelen mutuamente.",
+          "No ejercen ninguna fuerza por ser negativas.",
+          "La fuerza se vuelve estrictamente gravitacional."
+        ],
+        correct: 1,
+        explanation: "Cargas del mismo signo (positivas con positivas, o negativas con negativas) experimentan fuerza de repulsión. Cargas de signos opuestos se atraen."
+      },
+      {
+        id: 7,
+        topic: "atraccion_repulsion",
+        question: "¿Por qué la interacción gravitatoria es SIEMPRE de atracción, mientras que la interacción electrostática puede ser de atracción o repulsión?",
+        options: [
+          "Porque la constante G es muy grande y la constante k es muy pequeña.",
+          "Porque existe un solo tipo de masa (siempre positiva), mientras que existen dos tipos de carga eléctrica (positiva y negativa).",
+          "Porque la gravedad no posee naturaleza vectorial.",
+          "Porque los electrones no tienen masa."
+        ],
+        correct: 1,
+        explanation: "Dado que la masa gravitacional solo tiene valores positivos, la gravedad únicamente atrae. Las cargas eléctricas existen en dos variedades ($+$ y $-$), permitiendo atracción (signos opuestos) y repulsión (mismo signo)."
+      },
+      {
+        id: 8,
+        topic: "vectorial",
+        question: "En una línea recta, si una carga negativa $q$ está situada entre dos cargas positivas idénticas situadas a la misma distancia a su izquierda y derecha, ¿cuál es la fuerza nulta sobre $q$?",
+        options: [
+          "Cero (0 N), porque las dos fuerzas de atracción tienen igual magnitud y sentidos opuestos.",
+          "El doble de la fuerza de una sola carga dirigida hacia la izquierda.",
+          "Una fuerza repulsiva hacia arriba.",
+          "Infinito, porque se cancela la constante k."
+        ],
+        correct: 0,
+        explanation: "La fuerza es una magnitud vectorial. Al estar atraída con la misma intensidad hacia la izquierda y hacia la derecha, los vectores de fuerza se cancelan mutuamente produciendo una resultante nula."
+      },
+      {
+        id: 9,
+        topic: "comparacion",
+        question: "A nivel macroscópico en el universo (movimiento de planetas y galaxias), ¿por qué domina la gravedad sobre la fuerza electrostática a pesar de que $k (9\\times 10^9)$ es inmensamente mayor que $G (6.67\\times 10^{-11})$?",
+        options: [
+          "Porque los astros masivos son eléctricamente neutros en su totalidad, mientras que sus masas colosales se suman.",
+          "Porque la fuerza electrostática desaparece en el espacio exterior.",
+          "Porque $G$ aumenta cuando los objetos se alejan.",
+          "Porque la Ley de Coulomb no aplica a distancias mayores a un metro."
+        ],
+        correct: 0,
+        explanation: "A escala astronómica, la materia es prácticamente neutra (igual número de protones y electrones), cancelando la fuerza eléctrica neta. Sin embargo, la masa siempre se suma, haciendo que la gravedad domine el cosmos."
+      },
+      {
+        id: 10,
+        topic: "calculo_aplicacion",
+        question: "Calcula la fuerza gravitatoria aproximada de la Tierra ($m_1 = 6.0\\times 10^{24}$ kg) sobre un objeto de $m_2 = 100$ kg en su superficie ($r = 6.4\\times 10^6$ m, usando $P = m\\cdot g$ con $g \\approx 9.81\\text{ m/s}^2$):",
+        options: [
+          "981 N",
+          "98.1 N",
+          "6.67 N",
+          "9810 N"
+        ],
+        correct: 0,
+        explanation: "El peso sobre la superficie terrestre se calcula directamente como $P = m \\cdot g = 100 \\text{ kg} \\times 9.81 \\text{ m/s}^2 = 981 \\text{ N}$."
+      }
+    ];
+
+    // State object (Single source of truth)
+    let state = {
+      user: { name: '', group: '' },
+      phase: 0, // 0: Start, 1: Engage, 2: Explore, 3: Explain, 4: Elaborate, 5: Evaluate
+      screen: 'START',
+      engage: { prediction1: null, prediction2: null },
+      explore: { m1: 50, m2: 50, distG: 5, predMass: null, predDist: null, planet: 'earth' },
+      explain: { q1Sign: 1, q1Mag: 4, q2Sign: -1, q2Mag: 4, distC: 4, vectorChoice: null },
+      elaborate: {
+        categorizer: {
+          items: [
+            { id: 'm', text: 'Masa (kg)', cat: null, correct: 'grav' },
+            { id: 'q', text: 'Carga (C)', cat: null, correct: 'coul' },
+            { id: 'G', text: 'Constante G', cat: null, correct: 'grav' },
+            { id: 'k', text: 'Constante k', cat: null, correct: 'coul' },
+            { id: 'inv', text: 'Inverso del cuadrado (1/r²)', cat: null, correct: 'both' },
+            { id: 'att', text: 'Siempre Atractiva', cat: null, correct: 'grav' },
+            { id: 'rep', text: 'Atractiva o Repulsiva', cat: null, correct: 'coul' },
+            { id: 'vec', text: 'Naturaleza Vectorial', cat: null, correct: 'both' },
+            { id: 'dist', text: 'Acción a Distancia', cat: null, correct: 'both' }
+          ],
+          selectedChip: null
+        },
+        conceptMap: {
+          slots: { slot1: null, slot2: null, slot3: null, slot4: null },
+          checked: false
+        },
+        calculations: { prob1: null, prob2: null, prob3: null, prob4: null }
+      },
+      evaluate: {
+        currentQ: 0,
+        answers: new Array(10).fill(null),
+        submitted: false,
+        reflection: ''
+      }
+    };
+
+    const STORAGE_KEY = 'PROG7_PHYSICS_APP_STATE_V1';
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn("Storage error", e);
+      }
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.user && parsed.user.name) {
+            state = parsed;
+            return true;
+          }
+        }
+      } catch (e) {
+        console.warn("Error loading state", e);
+      }
+      return false;
+    }
+
+    // --- MAIN RENDER CONTROLLER ---
+    function renderApp() {
+      const container = document.getElementById('app-content');
+      const topBar = document.getElementById('top-bar');
+      const userTag = document.getElementById('user-display-tag');
+      const phaseBadge = document.getElementById('phase-display-badge');
+      const progressFill = document.getElementById('progress-bar-fill');
+
+      if (!container) return;
+
+      // Update Top Bar
+      if (state.screen === 'START') {
+        topBar.style.display = 'none';
+      } else {
+        topBar.style.display = 'flex';
+        userTag.textContent = `${state.user.name} (${state.user.group})`;
+        phaseBadge.textContent = `FASE ${state.phase} DE 5`;
+        const percent = Math.min(100, Math.max(5, (state.phase / 5) * 100));
+        progressFill.style.width = `${percent}%`;
+      }
+
+      // Route to correct screen view
+      switch (state.screen) {
+        case 'START':
+          renderStartScreen(container);
+          break;
+        case 'ENGAGE':
+          renderEngageScreen(container);
+          break;
+        case 'EXPLORE':
+          renderExploreScreen(container);
+          break;
+        case 'EXPLAIN':
+          renderExplainScreen(container);
+          break;
+        case 'ELABORATE':
+          renderElaborateScreen(container);
+          break;
+        case 'EVALUATE':
+          renderEvaluateScreen(container);
+          break;
+        case 'EVIDENCE':
+          renderEvidenceScreen(container);
+          break;
+        default:
+          renderStartScreen(container);
+      }
+    }
+
+    // --- SCREEN 0: START / REGISTRATION ---
+    function renderStartScreen(container) {
+      container.innerHTML = `
+        <div class="card" style="text-align: center;">
+          <span class="card-header-badge" style="align-self: center;">LA ENERGÍA EN LOS PROCESOS DE LA VIDA DIARIA</span>
+          <h1 style="margin-top: 4px;">PROGRESIÓN 7</h1>
+          <h2 style="font-size: 1.1rem; color: #f8fafc; font-weight: 800;">FUERZAS A DISTANCIA: GRAVITACIÓN Y LEY DE COULOMB</h2>
+          <p>Modelos matemáticos para describir y predecir los efectos de las fuerzas gravitatorias y electrostáticas entre objetos distantes.</p>
+
+          <form id="start-form" onsubmit="handleStartSubmit(event)" style="margin-top: 8px; display: flex; flex-direction: column; gap: 14px;">
+            <div class="input-group">
+              <label for="user-name">Nombre Completo del Estudiante *</label>
+              <input type="text" id="user-name" class="input-control" placeholder="Ej. Carlos Eduardo Ramírez" required value="${state.user.name}">
+            </div>
+
+            <div class="input-group">
+              <label for="user-group">Grupo *</label>
+              <input type="text" id="user-group" class="input-control" placeholder="Ej. 401-B" required value="${state.user.group}">
+            </div>
+
+            <div style="background: #0b101d; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; text-align: left; font-size: 0.85rem; color: var(--text-muted);">
+              <p style="color: var(--accent-cyan); font-weight: 700; margin-bottom: 4px;">📌 Metodología de la sesión (50 min):</p>
+              <ul style="padding-left: 16px; display: flex; flex-direction: column; gap: 4px;">
+                <li><strong>1. Enganchar:</strong> Interacciones a distancia y Kepler.</li>
+                <li><strong>2. Explorar:</strong> Simulación de Gravedad y Masa vs Pesos.</li>
+                <li><strong>3. Explicar:</strong> Ley de Coulomb, vectores y comparación.</li>
+                <li><strong>4. Elaborar:</strong> Clasificador, Mapa Conceptual y Problemas.</li>
+                <li><strong>5. Evaluar:</strong> Cuestionario final de 10 reactivos y reporte.</li>
+              </ul>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 6px;">
+              🚀 COMENZAR MI RECORRIDO
+            </button>
+          </form>
+        </div>
+      `;
+    }
+
+    function handleStartSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('user-name').value.trim();
+      const group = document.getElementById('user-group').value.trim();
+      if (!name || !group) return;
+
+      state.user.name = name;
+      state.user.group = group;
+      state.phase = 1;
+      state.screen = 'ENGAGE';
+      saveState();
+      renderApp();
+    }
+
+    // --- SCREEN 1: ENGAGE (5E - FASE 1) ---
+    function renderEngageScreen(container) {
+      container.innerHTML = `
+        <div class="card">
+          <span class="card-header-badge">FASE 1: ENGANCHAR (ENGAGE)</span>
+          <h1>1. Dos Interacciones a Distancia</h1>
+          <p>Observa cuidadosamente los dos sistemas representados a continuación. En ambos casos, los objetos ejercen fuerzas sobre el otro <strong>sin necesidad de tocarse físicamente</strong>.</p>
+
+          <!-- SVG Diagrams Comparison -->
+          <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+            <!-- System A: Earth Moon -->
+            <div style="background: #060911; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; text-align: center;">
+              <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan);">SISTEMA A: TIERRA — LUNA</span>
+              <svg viewBox="0 0 320 100" style="width: 100%; height: auto; max-height: 120px; margin-top: 6px;">
+                <!-- Earth -->
+                <circle cx="70" cy="50" r="28" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+                <text x="70" y="54" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Tierra (m1)</text>
+                <!-- Moon -->
+                <circle cx="250" cy="50" r="14" fill="#94a3b8" stroke="#cbd5e1" stroke-width="2"/>
+                <text x="250" y="53" fill="#fff" font-size="8" font-weight="bold" text-anchor="middle">Luna (m2)</text>
+                <!-- Force vectors pointing to each other -->
+                <line x1="98" y1="50" x2="140" y2="50" stroke="#10b981" stroke-width="3" marker-end="url(#arrow)"/>
+                <polygon points="140,50 132,45 132,55" fill="#10b981"/>
+                <line x1="236" y1="50" x2="194" y2="50" stroke="#10b981" stroke-width="3"/>
+                <polygon points="194,50 202,45 202,55" fill="#10b981"/>
+                <text x="165" y="42" fill="#10b981" font-size="9" font-weight="bold" text-anchor="middle">Fuerza Gravitatoria</text>
+              </svg>
+            </div>
+
+            <!-- System B: Two Electric Charges -->
+            <div style="background: #060911; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; text-align: center;">
+              <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent-purple);">SISTEMA B: CARGAS ELÉCTRICAS (+ y -)</span>
+              <svg viewBox="0 0 320 100" style="width: 100%; height: auto; max-height: 120px; margin-top: 6px;">
+                <!-- Charge + -->
+                <circle cx="70" cy="50" r="22" fill="#ef4444" stroke="#f87171" stroke-width="2"/>
+                <text x="70" y="55" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">+</text>
+                <!-- Charge - -->
+                <circle cx="250" cy="50" r="22" fill="#3b82f6" stroke="#60a5fa" stroke-width="2"/>
+                <text x="250" y="55" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">-</text>
+                <!-- Vectors -->
+                <line x1="92" y1="50" x2="140" y2="50" stroke="#8b5cf6" stroke-width="3"/>
+                <polygon points="140,50 132,45 132,55" fill="#8b5cf6"/>
+                <line x1="228" y1="50" x2="180" y2="50" stroke="#8b5cf6" stroke-width="3"/>
+                <polygon points="180,50 188,45 188,55" fill="#8b5cf6"/>
+                <text x="160" y="42" fill="#8b5cf6" font-size="9" font-weight="bold" text-anchor="middle">Fuerza Electrostática</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Conceptual Inquiry -->
+          <div style="background: #0b101d; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color);">
+            <p style="font-weight: 700; color: var(--text-main); margin-bottom: 8px;">🤔 Pregunta de Reflexión e Indagación:</p>
+            <p>¿Crees que la interacción gravitatoria entre planetas y la interacción electrostática entre cargas responden al mismo patrón matemático?</p>
+
+            <div class="options-stack" style="margin-top: 10px;">
+              <button class="option-btn ${state.engage.prediction1 === 0 ? 'selected' : ''}" onclick="selectEngagePred(0)">
+                <span class="option-letter">A</span>
+                <span>Sí, ambas dependen del producto de una propiedad y disminuyen con la distancia al cuadrado.</span>
+              </button>
+              <button class="option-btn ${state.engage.prediction1 === 1 ? 'selected' : ''}" onclick="selectEngagePred(1)">
+                <span class="option-letter">B</span>
+                <span>No, son totalmente distintas y no tienen ninguna fórmula en común.</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Antecedente Histórico: Leyes de Kepler -->
+          <div style="background: #0b101d; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent-amber);">🌌 ANTECEDENTE CONCEPTUAL: LAS LEYES DE KEPLER</span>
+            <p style="font-size: 0.88rem;">Antes de que Newton explicara la causa (la gravedad), Johannes Kepler dedujo las reglas matemáticas del movimiento planetario:</p>
+            
+            <div style="text-align: center; background: #060911; padding: 8px; border-radius: 8px;">
+              <svg viewBox="0 0 300 100" style="width: 100%; max-height: 90px;">
+                <ellipse cx="150" cy="50" rx="120" ry="38" fill="none" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="4,3"/>
+                <!-- Sun at focus -->
+                <circle cx="100" cy="50" r="10" fill="#f59e0b"/>
+                <text x="100" y="70" fill="#f59e0b" font-size="8" font-weight="bold" text-anchor="middle">Sol (Foco)</text>
+                <!-- Planet -->
+                <circle cx="230" cy="30" r="6" fill="#38bdf8"/>
+                <text x="230" y="20" fill="#38bdf8" font-size="8" font-weight="bold" text-anchor="middle">Planeta</text>
+              </svg>
+            </div>
+
+            <ul style="font-size: 0.85rem; padding-left: 18px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
+              <li><strong>1ª Ley:</strong> Los planetas se mueven en órbitas elípticas con el Sol en uno de sus focos.</li>
+              <li><strong>2ª Ley:</strong> El radio vector cubre áreas iguales en tiempos iguales (va más rápido cerca del Sol).</li>
+              <li><strong>3ª Ley:</strong> El cuadrado del periodo orbital es proporcional al cubo de la distancia media ($T^2 \\propto a^3$).</li>
+            </ul>
+          </div>
+
+          <button class="btn btn-primary" onclick="goToPhase(2, 'EXPLORE')">
+            CONTINUAR A LA FASE 2: EXPLORAR ➡️
+          </button>
+        </div>
+      `;
+    }
+
+    function selectEngagePred(val) {
+      state.engage.prediction1 = val;
+      saveState();
+      renderApp();
+    }
+
+    // --- SCREEN 2: EXPLORE (5E - FASE 2) ---
+    function renderExploreScreen(container) {
+      // Calculate Gravitational Force for interactive sim
+      // F = G * m1 * m2 / r^2 (Using calibrated scale)
+      const G = 6.674e-11;
+      const m1 = state.explore.m1;
+      const m2 = state.explore.m2;
+      const r = state.explore.distG;
+      const fVal = (G * (m1 * 1e20) * (m2 * 1e20)) / Math.pow(r * 1e7, 2);
+      const fDisplay = fVal.toExponential(2);
+
+      container.innerHTML = `
+        <div class="card">
+          <span class="card-header-badge">FASE 2: EXPLORAR (EXPLORE)</span>
+          <h1>2. Simulación de Interacción Gravitatoria</h1>
+          <p>Experimenta con la <strong>Ley de Gravitación Universal de Newton</strong>. Modifica las masas y la distancia para observar cómo cambia la fuerza de atracción entre los objetos.</p>
+
+          <!-- Interactive Sim Canvas -->
+          <div class="sim-container">
+            <div class="formula-banner">
+              <span>F = G · (m₁ · m₂) / r²</span>
+              <span style="font-size: 0.82rem; color: #94a3b8;">G = 6.67×10⁻¹¹ N·m²/kg²</span>
+            </div>
+
+            <div class="sim-canvas-box">
+              <svg viewBox="0 0 360 140" style="width: 100%; height: 100%;">
+                <!-- Distance indicator line -->
+                <line x1="${80}" y1="70" x2="${80 + r * 20}" y2="70" stroke="#475569" stroke-width="2" stroke-dasharray="4,4"/>
+                <text x="${80 + (r * 10)}" y="90" fill="#94a3b8" font-size="10" font-weight="bold" text-anchor="middle">r = ${r} Mkm</text>
+
+                <!-- Body 1 -->
+                <circle cx="80" cy="70" r="${12 + m1/10}" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+                <text x="80" y="38" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">m₁ (${m1})</text>
+
+                <!-- Body 2 -->
+                <circle cx="${80 + r * 20}" cy="70" r="${12 + m2/10}" fill="#8b5cf6" stroke="#c084fc" stroke-width="2"/>
+                <text x="${80 + r * 20}" y="38" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">m₂ (${m2})</text>
+
+                <!-- Force arrows (always attraction) -->
+                <line x1="${80 + 12 + m1/10}" y1="70" x2="${80 + 12 + m1/10 + Math.min(40, fVal*5)}" y2="70" stroke="#10b981" stroke-width="3.5"/>
+                <polygon points="${80 + 12 + m1/10 + Math.min(40, fVal*5)},70 ${80 + 4 + m1/10 + Math.min(40, fVal*5)},65 ${80 + 4 + m1/10 + Math.min(40, fVal*5)},75" fill="#10b981"/>
+
+                <line x1="${80 + r * 20 - (12 + m2/10)}" y1="70" x2="${80 + r * 20 - (12 + m2/10) - Math.min(40, fVal*5)}" y2="70" stroke="#10b981" stroke-width="3.5"/>
+                <polygon points="${80 + r * 20 - (12 + m2/10) - Math.min(40, fVal*5)},70 ${80 + r * 20 - (12 + m2/10) - Math.min(40, fVal*5) + 8},65 ${80 + r * 20 - (12 + m2/10) - Math.min(40, fVal*5) + 8},75" fill="#10b981"/>
+              </svg>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-grid">
+              <div class="slider-control">
+                <label>Masa 1 (m₁): <span class="value-display">${m1} ×10²⁰ kg</span></label>
+                <input type="range" min="10" max="100" value="${m1}" oninput="updateSimG('m1', this.value)">
+              </div>
+
+              <div class="slider-control">
+                <label>Masa 2 (m₂): <span class="value-display">${m2} ×10²⁰ kg</span></label>
+                <input type="range" min="10" max="100" value="${m2}" oninput="updateSimG('m2', this.value)">
+              </div>
+
+              <div class="slider-control" style="grid-column: 1 / -1;">
+                <label>Distancia (r): <span class="value-display">${r} Millones km</span></label>
+                <input type="range" min="2" max="10" value="${r}" oninput="updateSimG('distG', this.value)">
+              </div>
+            </div>
+
+            <div style="text-align: center; background: #172238; padding: 10px; border-radius: 8px;">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Magnitud de la Fuerza Gravitacional Resultante:</span>
+              <div style="font-size: 1.25rem; font-weight: 800; color: #10b981; font-family: monospace;">F = ${fDisplay} N</div>
+            </div>
+          </div>
+
+          <!-- Conceptual Quick Checks -->
+          <div style="background: #0b101d; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px;">
+            <p style="font-weight: 700; color: var(--accent-cyan);">❓ Predicción 1: Ley de Proporcionalidad</p>
+            <p style="font-size: 0.88rem;">Si duplicamos la Masa 1 (2·m₁) manteniendo todo lo demás igual, la fuerza de atracción:</p>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary ${state.explore.predMass === 'double' ? 'selected' : ''}" style="flex: 1;" onclick="setExplorePred('predMass', 'double')">Se Duplica (×2)</button>
+              <button class="btn btn-secondary ${state.explore.predMass === 'half' ? 'selected' : ''}" style="flex: 1;" onclick="setExplorePred('predMass', 'half')">Se Reduce a la mitad</button>
+            </div>
+            ${state.explore.predMass === 'double' ? `<div class="feedback-box feedback-correct">✅ ¡Correcto! La fuerza es directamente proporcional al producto de las masas.</div>` : ''}
+
+            <p style="font-weight: 700; color: var(--accent-cyan); margin-top: 6px;">❓ Predicción 2: La Ley del Inverso del Cuadrado (1/r²)</p>
+            <p style="font-size: 0.88rem;">Si duplicamos la distancia al doble (2·r), ¿la fuerza queda exactamente en la mitad?</p>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary ${state.explore.predDist === 'yes' ? 'selected' : ''}" style="flex: 1;" onclick="setExplorePred('predDist', 'yes')">Sí, la mitad (1/2)</button>
+              <button class="btn btn-secondary ${state.explore.predDist === 'no' ? 'selected' : ''}" style="flex: 1;" onclick="setExplorePred('predDist', 'no')">No, disminuye a la cuarta parte (1/4)</button>
+            </div>
+            ${state.explore.predDist === 'no' ? `<div class="feedback-box feedback-correct">✅ ¡Excelente! Como depende de 1/r², (2)² = 4, por lo que la fuerza disminuye a 1/4.</div>` : ''}
+          </div>
+
+          <!-- TEACHER PAUSE 1 -->
+          <div class="teacher-pause-card">
+            <div class="teacher-pause-title">
+              <span>🧑‍🏫 PAUSA CON TU PROFESOR</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-main);">
+              "Si la fuerza de gravedad es una interacción tan débil comparada con la fuerza eléctrica (la constante G es 6.67×10⁻¹¹), ¿por qué es la fuerza que domina el movimiento de planetas, estrellas y galaxias en todo el universo?"
+            </p>
+            <button class="btn btn-amber" onclick="confirmTeacherPause(1)">
+              YA LO COMENTAMOS EN CLASE — CONTINUAR
+            </button>
+          </div>
+
+          <!-- Micro-Activity: Masa vs Peso -->
+          <div style="background: #0b101d; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent-purple);">⚖️ MICROACTIVIDAD: MASA (kg) VS. PESO (N)</span>
+            <p style="font-size: 0.88rem;">Selecciona un astro para observar cómo cambia el peso (P = m·g) de un astronauta de <strong>70 kg</strong> mientras su masa permanece intacta:</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+              <button class="btn btn-secondary ${state.explore.planet === 'earth' ? 'selected' : ''}" onclick="setPlanet('earth')">🌍 Tierra (g=9.81)</button>
+              <button class="btn btn-secondary ${state.explore.planet === 'moon' ? 'selected' : ''}" onclick="setPlanet('moon')">🌙 Luna (g=1.62)</button>
+              <button class="btn btn-secondary ${state.explore.planet === 'mars' ? 'selected' : ''}" onclick="setPlanet('mars')">🔴 Marte (g=3.70)</button>
+            </div>
+
+            ${renderPlanetWeightBox()}
+          </div>
+
+          <button class="btn btn-primary" onclick="goToPhase(3, 'EXPLAIN')">
+            CONTINUAR A LA FASE 3: EXPLICAR ➡️
+          </button>
+        </div>
+      `;
+    }
+
+    function updateSimG(key, val) {
+      state.explore[key] = parseFloat(val);
+      saveState();
+      renderApp();
+    }
+
+    function setExplorePred(key, val) {
+      state.explore[key] = val;
+      saveState();
+      renderApp();
+    }
+
+    function setPlanet(p) {
+      state.explore.planet = p;
+      saveState();
+      renderApp();
+    }
+
+    function renderPlanetWeightBox() {
+      const p = state.explore.planet;
+      let g = 9.81;
+      let name = "Tierra";
+      if (p === 'moon') { g = 1.62; name = "Luna"; }
+      if (p === 'mars') { g = 3.70; name = "Marte"; }
+
+      const weight = (70 * g).toFixed(1);
+
+      return `
+        <div style="background: #172238; border-radius: 10px; padding: 12px; display: flex; justify-content: space-around; align-items: center; margin-top: 4px;">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">MASA (Materia):</div>
+            <div style="font-size: 1.1rem; font-weight: 800; color: #38bdf8;">70.0 kg</div>
+          </div>
+          <div style="border-left: 1px solid var(--border-color); height: 30px;"></div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">PESO en ${name} (Fuerza):</div>
+            <div style="font-size: 1.1rem; font-weight: 800; color: #f59e0b;">${weight} N</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function confirmTeacherPause(num) {
+      alert("✅ Pausa registrada. Continúa con la actividad.");
+    }
+
+    // --- SCREEN 3: EXPLAIN (5E - FASE 3) ---
+    function renderExplainScreen(container) {
+      // Coulomb Simulation Calculations
+      // F = k * |q1 * q2| / r^2
+      const k = 9e9;
+      const q1 = state.explain.q1Sign * state.explain.q1Mag * 1e-6;
+      const q2 = state.explain.q2Sign * state.explain.q2Mag * 1e-6;
+      const r = state.explain.distC * 0.05; // meters scale
+      const fVal = (k * Math.abs(q1 * q2)) / Math.pow(r, 2);
+      const isRepulsion = (state.explain.q1Sign * state.explain.q2Sign) > 0;
+
+      container.innerHTML = `
+        <div class="card">
+          <span class="card-header-badge">FASE 3: EXPLICAR (EXPLAIN)</span>
+          <h1>3. Ley de Coulomb e Interacción Electrostática</h1>
+          <p>La fuerza entre cargas depende de sus magnitudes, de la constante de Coulomb ($k = 9\\times 10^9 \\text{ N}\\cdot\\text{m}^2/\\text{C}^2$) y del inverso del cuadrado de la distancia.</p>
+
+          <!-- Side-by-side Math Pattern -->
+          <div style="background: #0b101d; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color);">
+            <p style="font-size: 0.82rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase;">📐 PATRÓN MATEMÁTICO COMPARADO</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+              <div style="background: #172238; padding: 10px; border-radius: 8px; text-align: center;">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">GRAVITACIÓN</span>
+                <div style="font-family: monospace; font-size: 1rem; color: #38bdf8; font-weight: bold; margin-top: 4px;">F_g = G · (m₁m₂) / r²</div>
+              </div>
+              <div style="background: #172238; padding: 10px; border-radius: 8px; text-align: center;">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">COULOMB</span>
+                <div style="font-family: monospace; font-size: 1rem; color: #c084fc; font-weight: bold; margin-top: 4px;">F_e = k · |q₁q₂| / r²</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Coulomb Sim -->
+          <div class="sim-container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 800; font-size: 0.9rem; color: var(--accent-purple);">⚡ SIMULADOR DE COULOMB</span>
+              <span style="font-size: 0.8rem; font-weight: 800; color: ${isRepulsion ? '#ef4444' : '#10b981'};">${isRepulsion ? 'REPULSIÓN (Mismo signo)' : 'ATRACCIÓN (Signos opuestos)'}</span>
+            </div>
+
+            <div class="sim-canvas-box">
+              <svg viewBox="0 0 360 140" style="width: 100%; height: 100%;">
+                <!-- Charge 1 -->
+                <circle cx="90" cy="70" r="${14 + state.explain.q1Mag*2}" fill="${state.explain.q1Sign > 0 ? '#ef4444' : '#3b82f6'}"/>
+                <text x="90" y="75" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">${state.explain.q1Sign > 0 ? '+' : '-'}</text>
+
+                <!-- Charge 2 -->
+                <circle cx="${90 + state.explain.distC * 22}" cy="70" r="${14 + state.explain.q2Mag*2}" fill="${state.explain.q2Sign > 0 ? '#ef4444' : '#3b82f6'}"/>
+                <text x="${90 + state.explain.distC * 22}" y="75" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">${state.explain.q2Sign > 0 ? '+' : '-'}</text>
+
+                <!-- Vector arrows based on repulsion/attraction -->
+                ${renderCoulombVectors(isRepulsion, state.explain.distC, fVal)}
+              </svg>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-grid">
+              <div class="slider-control">
+                <label>Signo y Carga q₁: <span class="value-display">${state.explain.q1Sign > 0 ? '+' : '-'}${state.explain.q1Mag} μC</span></label>
+                <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+                  <button class="btn btn-secondary" style="padding: 4px;" onclick="setQSign('q1Sign', 1)">+</button>
+                  <button class="btn btn-secondary" style="padding: 4px;" onclick="setQSign('q1Sign', -1)">-</button>
+                </div>
+                <input type="range" min="1" max="10" value="${state.explain.q1Mag}" oninput="updateSimC('q1Mag', this.value)">
+              </div>
+
+              <div class="slider-control">
+                <label>Signo y Carga q₂: <span class="value-display">${state.explain.q2Sign > 0 ? '+' : '-'}${state.explain.q2Mag} μC</span></label>
+                <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+                  <button class="btn btn-secondary" style="padding: 4px;" onclick="setQSign('q2Sign', 1)">+</button>
+                  <button class="btn btn-secondary" style="padding: 4px;" onclick="setQSign('q2Sign', -1)">-</button>
+                </div>
+                <input type="range" min="1" max="10" value="${state.explain.q2Mag}" oninput="updateSimC('q2Mag', this.value)">
+              </div>
+
+              <div class="slider-control" style="grid-column: 1 / -1;">
+                <label>Distancia (r): <span class="value-display">${(state.explain.distC * 5)} cm</span></label>
+                <input type="range" min="2" max="8" value="${state.explain.distC}" oninput="updateSimC('distC', this.value)">
+              </div>
+            </div>
+
+            <div style="text-align: center; background: #172238; padding: 10px; border-radius: 8px;">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Magnitud de Fuerza Electrostática:</span>
+              <div style="font-size: 1.2rem; font-weight: 800; color: #c084fc; font-family: monospace;">F_e = ${fVal.toFixed(2)} N</div>
+            </div>
+          </div>
+
+          <!-- 3-Charge 1D Line Scenario -->
+          <div style="background: #0b101d; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan);">📍 ANÁLISIS VECTORIAL: 3 CARGAS EN LÍNEA RECTA</span>
+            <p style="font-size: 0.88rem;">Analiza la fuerza neta sobre la carga central negativa <strong>q₂ (-4 μC)</strong> colocada entre dos cargas positivas:</p>
+
+            <div style="text-align: center; background: #060911; padding: 10px; border-radius: 8px;">
+              <svg viewBox="0 0 300 70" style="width: 100%; max-height: 80px;">
+                <!-- q1 -->
+                <circle cx="50" cy="35" r="14" fill="#ef4444"/>
+                <text x="50" y="40" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">+q₁ (+8μC)</text>
+                <!-- q2 -->
+                <circle cx="150" cy="35" r="14" fill="#3b82f6"/>
+                <text x="150" y="40" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">-q₂ (-4μC)</text>
+                <!-- q3 -->
+                <circle cx="250" cy="35" r="14" fill="#ef4444"/>
+                <text x="250" y="40" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">+q₃ (+8μC)</text>
+
+                <!-- Arrows -->
+                <line x1="130" y1="35" x2="90" y2="35" stroke="#10b981" stroke-width="2.5"/>
+                <polygon points="90,35 98,30 98,40" fill="#10b981"/>
+                <line x1="170" y1="35" x2="210" y2="35" stroke="#10b981" stroke-width="2.5"/>
+                <polygon points="210,35 202,30 202,40" fill="#10b981"/>
+              </svg>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--text-muted);">¿Hacia dónde apunta la fuerza resultante sobre la carga central q₂ si la distancia a ambas cargas idénticas es exactamente la misma?</p>
+            <div class="options-stack">
+              <button class="option-btn ${state.explain.vectorChoice === 0 ? 'selected' : ''}" onclick="setVectorChoice(0)">
+                <span class="option-letter">A</span>
+                <span>La fuerza resultante es Cero (0 N) porque ambas atracciones son iguales en magnitud pero opuestas en sentido.</span>
+              </button>
+              <button class="option-btn ${state.explain.vectorChoice === 1 ? 'selected' : ''}" onclick="setVectorChoice(1)">
+                <span class="option-letter">B</span>
+                <span>Se mueve hacia la izquierda con el doble de fuerza.</span>
+              </button>
+            </div>
+            ${state.explain.vectorChoice === 0 ? `<div class="feedback-box feedback-correct">✅ ¡Correcto! Al ser de magnitudes iguales y sentidos opuestos, la suma vectorial da cero.</div>` : ''}
+          </div>
+
+          <!-- TEACHER PAUSE 2 -->
+          <div class="teacher-pause-card">
+            <div class="teacher-pause-title">
+              <span>🧑‍🏫 PAUSA CON TU PROFESOR</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-main);">
+              "Compara las dos leyes: ¿Qué tienen en común sus expresiones matemáticas? ¿Cuál es la diferencia fundamental en la naturaleza de sus fuentes (masas frente a cargas)?"
+            </p>
+            <button class="btn btn-amber" onclick="confirmTeacherPause(2)">
+              YA LO COMENTAMOS EN CLASE — CONTINUAR
+            </button>
+          </div>
+
+          <button class="btn btn-primary" onclick="goToPhase(4, 'ELABORATE')">
+            CONTINUAR A LA FASE 4: ELABORAR ➡️
+          </button>
+        </div>
+      `;
+    }
+
+    function renderCoulombVectors(isRepulsion, distC, fVal) {
+      const c1X = 90;
+      const c2X = 90 + distC * 22;
+      const arrowLen = Math.min(35, 10 + fVal * 2);
+
+      if (isRepulsion) {
+        return `
+          <!-- Arrow pointing left from Charge 1 -->
+          <line x1="${c1X - 20}" y1="70" x2="${c1X - 20 - arrowLen}" y2="70" stroke="#ef4444" stroke-width="3"/>
+          <polygon points="${c1X - 20 - arrowLen},70 ${c1X - 12 - arrowLen},65 ${c1X - 12 - arrowLen},75" fill="#ef4444"/>
+          <!-- Arrow pointing right from Charge 2 -->
+          <line x1="${c2X + 20}" y1="70" x2="${c2X + 20 + arrowLen}" y2="70" stroke="#ef4444" stroke-width="3"/>
+          <polygon points="${c2X + 20 + arrowLen},70 ${c2X + 12 + arrowLen},65 ${c2X + 12 + arrowLen},75" fill="#ef4444"/>
+        `;
+      } else {
+        return `
+          <!-- Arrow pointing right from Charge 1 -->
+          <line x1="${c1X + 20}" y1="70" x2="${c1X + 20 + arrowLen}" y2="70" stroke="#10b981" stroke-width="3"/>
+          <polygon points="${c1X + 20 + arrowLen},70 ${c1X + 12 + arrowLen},65 ${c1X + 12 + arrowLen},75" fill="#10b981"/>
+          <!-- Arrow pointing left from Charge 2 -->
+          <line x1="${c2X - 20}" y1="70" x2="${c2X - 20 - arrowLen}" y2="70" stroke="#10b981" stroke-width="3"/>
+          <polygon points="${c2X - 20 - arrowLen},70 ${c2X - 12 - arrowLen},65 ${c2X - 12 - arrowLen},75" fill="#10b981"/>
+        `;
+      }
+    }
+
+    function updateSimC(key, val) {
+      state.explain[key] = parseFloat(val);
+      saveState();
+      renderApp();
+    }
+
+    function setQSign(key, val) {
+      state.explain[key] = val;
+      saveState();
+      renderApp();
+    }
+
+    function setVectorChoice(val) {
+      state.explain.vectorChoice = val;
+      saveState();
+      renderApp();
+    }
+
+    // --- SCREEN 4: ELABORATE (5E - FASE 4) ---
+    function renderElaborateScreen(container) {
+      const catState = state.elaborate.categorizer;
+
+      container.innerHTML = `
+        <div class="card">
+          <span class="card-header-badge">FASE 4: ELABORAR (ELABORATE)</span>
+          <h1>4. Aplicación y Síntesis de Conceptos</h1>
+          <p>Organiza las propiedades, clasifica las leyes y resuelve problemas guiados para afianzar el modelo matemático.</p>
+
+          <!-- Activity 1: Touch Categorizer (3 Columns) -->
+          <div style="background: #0b101d; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+            <span style="font-size: 0.82rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase;">📊 ACTIVIDAD 1: CLASIFICADOR TÁCTIL (Toca ficha → Toca columna)</span>
+            
+            <!-- Items Pool -->
+            <div class="items-pool">
+              ${catState.items.map(item => {
+                if (item.cat !== null) return '';
+                const isSel = catState.selectedChip === item.id;
+                return `
+                  <div class="chip-item ${isSel ? 'selected-chip' : ''}" onclick="selectChip('${item.id}')">
+                    ${item.text}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- Target Columns -->
+            <div class="category-columns">
+              <!-- Gravitation Column -->
+              <div class="category-box ${catState.selectedChip ? 'active-target' : ''}" onclick="placeChipInCat('grav')">
+                <div class="category-title">GRAVITACIÓN</div>
+                ${catState.items.filter(i => i.cat === 'grav').map(i => `<div class="chip-item" onclick="removeChipFromCat('${i.id}')">${i.text} ✕</div>`).join('')}
+              </div>
+              <!-- Coulomb Column -->
+              <div class="category-box ${catState.selectedChip ? 'active-target' : ''}" onclick="placeChipInCat('coul')">
+                <div class="category-title">LEY DE COULOMB</div>
+                ${catState.items.filter(i => i.cat === 'coul').map(i => `<div class="chip-item" onclick="removeChipFromCat('${i.id}')">${i.text} ✕</div>`).join('')}
+              </div>
+              <!-- Both Column -->
+              <div class="category-box ${catState.selectedChip ? 'active-target' : ''}" onclick="placeChipInCat('both')">
+                <div class="category-title">AMBAS LEYES</div>
+                ${catState.items.filter(i => i.cat === 'both').map(i => `<div class="chip-item" onclick="removeChipFromCat('${i.id}')">${i.text} ✕</div>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity 2: Interactive Concept Map -->
+          <div style="background: #0b101d; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+            <span style="font-size: 0.82rem; font-weight: 800; color: var(--accent-purple); text-transform: uppercase;">🧩 ACTIVIDAD 2: MAPA CONCEPTUAL INTERACTIVO</span>
+            <p style="font-size: 0.85rem;">Completa las relaciones conceptuales clave de la Progresión 7:</p>
+
+            <div class="map-nodes-grid">
+              <div class="map-node">
+                <span class="map-node-label">1. La fuerza gravitacional actúa entre:</span>
+                <div class="map-slot ${state.elaborate.conceptMap.slots.slot1 ? 'filled' : ''}" onclick="triggerConceptSlot('slot1')">
+                  ${state.elaborate.conceptMap.slots.slot1 || 'Toca para seleccionar'}
+                </div>
+              </div>
+
+              <div class="map-node">
+                <span class="map-node-label">2. La fuerza eléctrica actúa entre:</span>
+                <div class="map-slot ${state.elaborate.conceptMap.slots.slot2 ? 'filled' : ''}" onclick="triggerConceptSlot('slot2')">
+                  ${state.elaborate.conceptMap.slots.slot2 || 'Toca para seleccionar'}
+                </div>
+              </div>
+
+              <div class="map-node">
+                <span class="map-node-label">3. La constante en el SI para gravedad es:</span>
+                <div class="map-slot ${state.elaborate.conceptMap.slots.slot3 ? 'filled' : ''}" onclick="triggerConceptSlot('slot3')">
+                  ${state.elaborate.conceptMap.slots.slot3 || 'Toca para seleccionar'}
+                </div>
+              </div>
+
+              <div class="map-node">
+                <span class="map-node-label">4. Ambas fuerzas disminuyen con:</span>
+                <div class="map-slot ${state.elaborate.conceptMap.slots.slot4 ? 'filled' : ''}" onclick="triggerConceptSlot('slot4')">
+                  ${state.elaborate.conceptMap.slots.slot4 || 'Toca para seleccionar'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity 3: Guided Mathematical Calculations -->
+          <div style="background: #0b101d; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px;">
+            <span style="font-size: 0.82rem; font-weight: 800; color: var(--accent-amber); text-transform: uppercase;">🧮 ACTIVIDAD 3: CÁLCULOS GUIADOS PASO A PASO</span>
+
+            <!-- Problem 1: Weight on Earth -->
+            <div style="background: #172238; padding: 12px; border-radius: 10px;">
+              <p style="font-weight: 700; color: #fff; font-size: 0.88rem;">Problema 1: Un satélite tiene una masa de 2000 kg. ¿Cuál es su peso (P = m·g) en la superficie terrestre (g = 9.81 m/s²)?</p>
+              <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <button class="btn btn-secondary ${state.elaborate.calculations.prob1 === '19620' ? 'selected' : ''}" style="flex: 1;" onclick="setCalc('prob1', '19620')">19,620 N</button>
+                <button class="btn btn-secondary ${state.elaborate.calculations.prob1 === '2000' ? 'selected' : ''}" style="flex: 1;" onclick="setCalc('prob1', '2000')">2,000 N</button>
+              </div>
+              ${state.elaborate.calculations.prob1 === '19620' ? `<div class="feedback-box feedback-correct" style="margin-top:6px;">✅ ¡Correcto! P = 2000 kg × 9.81 m/s² = 19,620 N.</div>` : ''}
+            </div>
+
+            <!-- Problem 2: Coulomb Force -->
+            <div style="background: #172238; padding: 12px; border-radius: 10px;">
+              <p style="font-weight: 700; color: #fff; font-size: 0.88rem;">Problema 2: Dos cargas puntuales q₁ = 1×10⁻⁶ C y q₂ = 1×10⁻⁶ C se separan r = 0.03 m. ¿Cuál es la fuerza de Coulomb (k = 9×10⁹)?</p>
+              <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <button class="btn btn-secondary ${state.elaborate.calculations.prob2 === '10' ? 'selected' : ''}" style="flex: 1;" onclick="setCalc('prob2', '10')">10 N</button>
+                <button class="btn btn-secondary ${state.elaborate.calculations.prob2 === '100' ? 'selected' : ''}" style="flex: 1;" onclick="setCalc('prob2', '100')">100 N</button>
+              </div>
+              ${state.elaborate.calculations.prob2 === '10' ? `<div class="feedback-box feedback-correct" style="margin-top:6px;">✅ ¡Correcto! F = (9×10⁹ × 1×10⁻¹²) / (0.0009) = 10 N.</div>` : ''}
+            </div>
+          </div>
+
+          <!-- TEACHER PAUSE 3 -->
+          <div class="teacher-pause-card">
+            <div class="teacher-pause-title">
+              <span>🧑‍🏫 PAUSA FINAL CON TU PROFESOR</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-main);">
+              "Si tienes alguna duda final sobre atracción, repulsión, constantes G y k, o la diferencia entre masa y peso, coméntala ahora antes de pasar al cuestionario final."
+            </p>
+            <button class="btn btn-amber" onclick="confirmTeacherPause(3)">
+              ESTOY LISTO PARA EL RETO FINAL
+            </button>
+          </div>
+
+          <button class="btn btn-primary" onclick="goToPhase(5, 'EVALUATE')">
+            CONTINUAR A LA FASE 5: EVALUAR 🏁
+          </button>
+        </div>
+      `;
+    }
+
+    // Categorizer Functions
+    function selectChip(id) {
+      state.elaborate.categorizer.selectedChip = id;
+      saveState();
+      renderApp();
+    }
+
+    function placeChipInCat(catTarget) {
+      const selId = state.elaborate.categorizer.selectedChip;
+      if (!selId) return;
+
+      const item = state.elaborate.categorizer.items.find(i => i.id === selId);
+      if (item) {
+        item.cat = catTarget;
+      }
+      state.elaborate.categorizer.selectedChip = null;
+      saveState();
+      renderApp();
+    }
+
+    function removeChipFromCat(id) {
+      const item = state.elaborate.categorizer.items.find(i => i.id === id);
+      if (item) {
+        item.cat = null;
+      }
+      saveState();
+      renderApp();
+    }
+
+    // Concept Map Functions
+    function triggerConceptSlot(slotKey) {
+      const options = [
+        "Dos Masas (m₁, m₂)",
+        "Dos Cargas (q₁, q₂)",
+        "G = 6.67×10⁻¹¹ N·m²/kg²",
+        "El cuadrado de la distancia (1/r²)"
+      ];
+      
+      const current = state.elaborate.conceptMap.slots[slotKey];
+      let nextIdx = 0;
+      if (current) {
+        const idx = options.indexOf(current);
+        nextIdx = (idx + 1) % options.length;
+      }
+      state.elaborate.conceptMap.slots[slotKey] = options[nextIdx];
+      saveState();
+      renderApp();
+    }
+
+    function setCalc(probKey, val) {
+      state.elaborate.calculations[probKey] = val;
+      saveState();
+      renderApp();
+    }
+
+    // --- SCREEN 5: EVALUATE (5E - FASE 5) ---
+    function renderEvaluateScreen(container) {
+      const quiz = state.evaluate;
+      const currentIdx = quiz.currentQ;
+      const q = QUIZ_BANK[currentIdx];
+      const hasAnsweredCurrent = quiz.answers[currentIdx] !== null;
+
+      container.innerHTML = `
+        <div class="card">
+          <span class="card-header-badge">FASE 5: EVALUACIÓN FORMATIVA (EVALUATE)</span>
+          <h1>5. Reto Final de Evaluación</h1>
+          <p>Responde los 10 reactivos conceptuales. Puedes navegar libremente entre ellos antes de enviar tu evaluación.</p>
+
+          <!-- 10 Question Navigation Grid -->
+          <div class="quiz-nav-grid">
+            ${QUIZ_BANK.map((item, idx) => {
+              let cls = "quiz-nav-btn";
+              if (idx === currentIdx) cls += " active";
+              if (quiz.answers[idx] !== null) cls += " answered";
+              return `<button class="${cls}" onclick="navQuizTo(${idx})">${idx + 1}</button>`;
+            }).join('')}
+          </div>
+
+          <!-- Question Body -->
+          <div style="background: #0b101d; padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan);">PREGUNTA ${currentIdx + 1} DE 10</span>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">${q.topic.toUpperCase()}</span>
+            </div>
+
+            <p style="font-weight: 700; color: var(--text-main); font-size: 1rem; line-height: 1.4;">
+              ${q.question}
+            </p>
+
+            <div class="options-stack">
+              ${q.options.map((opt, i) => {
+                const isSelected = quiz.answers[currentIdx] === i;
+                const letters = ["A", "B", "C", "D"];
+                return `
+                  <button class="option-btn ${isSelected ? 'selected' : ''}" onclick="selectQuizAnswer(${i})">
+                    <span class="option-letter">${letters[i]}</span>
+                    <span>${opt}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Nav Controls -->
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary" style="flex: 1;" ${currentIdx === 0 ? 'disabled' : ''} onclick="navQuizTo(${currentIdx - 1})">
+              ⬅️ ANTERIOR
+            </button>
+            <button class="btn btn-secondary" style="flex: 1;" ${currentIdx === 9 ? 'disabled' : ''} onclick="navQuizTo(${currentIdx + 1})">
+              SIGUIENTE ➡️
+            </button>
+          </div>
+
+          <!-- Submit Button -->
+          <div style="margin-top: 8px;">
+            ${renderSubmitQuizButton()}
+          </div>
+        </div>
+      `;
+    }
+
+    function navQuizTo(idx) {
+      state.evaluate.currentQ = idx;
+      saveState();
+      renderApp();
+    }
+
+    function selectQuizAnswer(optIdx) {
+      state.evaluate.answers[state.evaluate.currentQ] = optIdx;
+      saveState();
+      renderApp();
+    }
+
+    function renderSubmitQuizButton() {
+      const answeredCount = state.evaluate.answers.filter(a => a !== null).length;
+      if (answeredCount < 10) {
+        return `
+          <div style="text-align: center; font-size: 0.85rem; color: var(--accent-amber); margin-bottom: 6px;">
+            ⚠️ Has respondido ${answeredCount} de 10 preguntas. Completa todas para finalizar.
+          </div>
+          <button class="btn btn-disabled">🏁 FINALIZAR EVALUACIÓN</button>
+        `;
+      }
+      return `
+        <button class="btn btn-primary" onclick="submitQuiz()">
+          🏁 FINALIZAR Y GENERAR EVIDENCIA
+        </button>
+      `;
+    }
+
+    function submitQuiz() {
+      state.evaluate.submitted = true;
+      state.screen = 'EVIDENCE';
+      saveState();
+      renderApp();
+    }
+
+    // --- SCREEN 6: EVIDENCE & RESULTS CARD ---
+    function renderEvidenceScreen(container) {
+      // Calculate Score
+      let correct = 0;
+      QUIZ_BANK.forEach((q, idx) => {
+        if (state.evaluate.answers[idx] === q.correct) correct++;
+      });
+      const pct = Math.round((correct / 10) * 100);
+
+      // Performance Badge
+      let perfText = "";
+      let perfClass = "";
+      if (pct >= 90) { perfText = "EXCELENTE"; perfClass = "badge-exc"; }
+      else if (pct >= 80) { perfText = "MUY BUEN DOMINIO"; perfClass = "badge-good"; }
+      else if (pct >= 70) { perfText = "BUEN DOMINIO"; perfClass = "badge-good"; }
+      else if (pct >= 60) { perfText = "EN PROCESO"; perfClass = "badge-proc"; }
+      else { perfText = "REQUIERE REFORZAMIENTO"; perfClass = "badge-reinf"; }
+
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('es-MX', { year: 'numeric', month: '2-digit', day: '2-digit' });
+      const timeStr = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+
+      container.innerHTML = `
+        <div class="evidence-card">
+          <span class="card-header-badge" style="align-self: center;">EVIDENCIA DE EVALUACIÓN OFICIAL</span>
+          <h2 style="color: #fff; font-size: 1.1rem; margin-bottom: 2px;">LA ENERGÍA EN LOS PROCESOS DE LA VIDA DIARIA</h2>
+          <p style="color: var(--accent-cyan); font-weight: 700; font-size: 0.85rem;">PROGRESIÓN 7: GRAVITACIÓN UNIVERSAL Y LEY DE COULOMB</p>
+
+          <div style="background-color: #0b101d; border-radius: 12px; padding: 12px;">
+            <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">${state.user.name}</div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-cyan);">GRUPO: ${state.user.group}</div>
+          </div>
+
+          <div class="score-large">${pct}%</div>
+          <div style="font-weight: 800; font-size: 1.1rem; color: var(--text-main);">
+            ${correct} / 10 ACIERTOS
+          </div>
+
+          <div class="badge-perf ${perfClass}">
+            ${perfText}
+          </div>
+
+          <table class="summary-table">
+            <tr><td>Estudiante:</td><td>${state.user.name}</td></tr>
+            <tr><td>Grupo:</td><td>${state.user.group}</td></tr>
+            <tr><td>Reactivos Correctos:</td><td>${correct} de 10</td></tr>
+            <tr><td>Porcentaje Obtenido:</td><td>${pct}%</td></tr>
+            <tr><td>Fecha y Hora:</td><td>${dateStr} - ${timeStr}</td></tr>
+            <tr><td>Estatus:</td><td>✅ EVALUACIÓN COMPLETADA</td></tr>
+          </table>
+
+          <!-- Metacognitive Reflection Area -->
+          <div style="background-color: #0b101d; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; text-align: left;">
+            <label style="font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase;">🧠 Mi Reflexión Escrita:</label>
+            <p style="font-size: 0.85rem; margin-top: 4px; color: var(--text-muted);">En tus propias palabras: ¿Qué semejanza y qué diferencia fundamental encuentras entre la Ley de Gravitación y la Ley of Coulomb?</p>
+            <textarea id="reflection-text" class="input-control" rows="3" style="margin-top: 6px; font-size: 0.88rem;" placeholder="Escribe aquí tu reflexión final para tu profesor..." onchange="saveReflection(this.value)">${state.evaluate.reflection}</textarea>
+          </div>
+
+          <div class="camera-notice">
+            📸 TOMA UNA CAPTURA DE ESTA PANTALLA Y ENVÍALA A TU PROFESOR COMO EVIDENCIA.
+          </div>
+
+          <!-- Review Answers Collapsible -->
+          <div style="margin-top: 8px;">
+            <button class="btn btn-secondary" onclick="toggleAnswerReview()">
+              🔍 REVISAR RETROALIMENTACIÓN DE LAS 10 PREGUNTAS
+            </button>
+            <div id="answers-review-box" style="display: none; flex-direction: column; gap: 10px; margin-top: 12px; text-align: left;">
+              ${QUIZ_BANK.map((q, idx) => {
+                const userAns = state.evaluate.answers[idx];
+                const isCorr = userAns === q.correct;
+                return `
+                  <div style="background: #0b101d; border: 1px solid ${isCorr ? 'var(--success)' : 'var(--danger)'}; border-radius: 10px; padding: 10px; font-size: 0.85rem;">
+                    <div style="font-weight: 700; color: #fff;">${idx + 1}. ${q.question}</div>
+                    <div style="color: ${isCorr ? '#6ee7b7' : '#fca5a5'}; margin-top: 4px;">
+                      Tu respuesta: ${q.options[userAns]} ${isCorr ? '✅' : '❌'}
+                    </div>
+                    ${!isCorr ? `<div style="color: #38bdf8; font-weight: 600;">Respuesta correcta: ${q.options[q.correct]}</div>` : ''}
+                    <div style="color: var(--text-muted); margin-top: 4px; font-size: 0.8rem;"><strong>Explicación:</strong> ${q.explanation}</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <button class="btn btn-secondary" style="margin-top: 12px;" onclick="resetQuizSession()">
+            🔄 Reiniciar evaluación para otro estudiante
+          </button>
+        </div>
+      `;
+    }
+
+    function saveReflection(val) {
+      state.evaluate.reflection = val;
+      saveState();
+    }
+
+    function toggleAnswerReview() {
+      const box = document.getElementById('answers-review-box');
+      if (box) {
+        box.style.display = box.style.display === 'none' ? 'flex' : 'none';
+      }
+    }
+
+    function resetQuizSession() {
+      if (confirm("¿Deseas reiniciar la aplicación para otro estudiante?")) {
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch(e) {}
+        state.user = { name: '', group: '' };
+        state.phase = 0;
+        state.screen = 'START';
+        state.evaluate.answers = new Array(10).fill(null);
+        state.evaluate.submitted = false;
+        renderApp();
+      }
+    }
+
+    // Navigation Helper
+    function goToPhase(phaseNum, screenName) {
+      state.phase = phaseNum;
+      state.screen = screenName;
+      saveState();
+      renderApp();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+      loadState();
+      renderApp();
+    };
+  </script>
+</body>
+</html>
